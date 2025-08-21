@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tasks</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <h1>Bem-vindo ao Task App</h1>
+
+    <!-- Navegação -->
+    <nav class="menu-nav">
+        <% if (isAuthenticated) { %>
+            <form action="/logout" method="POST" style="display: inline;">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                <button type="submit">Logout</button>
+            </form>
+        <% } else { %>
+            <a href="/login">Login</a> | 
+            <a href="/signup">Sign Up</a>
+        <% } %>
+    </nav>
+
+    <h2>Suas Tarefas</h2>
+
+    <!-- Lista de erros gerais -->
+    <% if (errors && errors.length > 0) { %>
+        <ul class="error-messages">
+            <% errors.forEach(error => { %>
+                <li><%= error.msg %></li>
+            <% }) %>
+        </ul>
+    <% } %>
+
+    <!-- Formulário para adicionar nova tarefa -->
+    <form action="/task/add" method="POST" style="margin-bottom: 20px;">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+        <input 
+            type="text" 
+            name="summary" 
+            placeholder="Nova tarefa" 
+            value="<%= oldInput?.summary?.replace(/"/g, '&quot;') || '' %>" 
+            required
+        >
+        <% if (errors?.some(e => e.param === 'summary')) { %>
+            <small class="error">
+                <%= errors.find(e => e.param === 'summary').msg %>
+            </small>
+        <% } %>
+        <button type="submit">Adicionar</button>
+    </form>
+
+    <!-- Lista de tarefas -->
+    <ul>
+        <% tasks.forEach(task => { %>
+            <li>
+                <!-- Formulário para editar tarefa -->
+                <form action="/task/edit/<%= task._id %>" method="POST" style="display: inline;">
+                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                    <input 
+                        type="text" 
+                        name="summary" 
+                        value="<%= task.summary.replace(/"/g, '&quot;') %>" 
+                        required
+                    >
+                    <button type="submit">Salvar</button>
+                </form>
+
+                <!-- Formulário para excluir tarefa -->
+                <form action="/task/delete/<%= task._id %>" method="POST" style="display: inline;">
+                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                    <button type="submit">Excluir</button>
+                </form>
+            </li>
+            <br>
+        <% }) %>
+    </ul>
+</body>
+</html>

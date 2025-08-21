@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Criar Conta</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+    <h1>Criar Conta</h1>
+
+    <!-- Navegação -->
+    <nav class="menu-nav">
+        <% if (isAuthenticated) { %>
+            <form action="/logout" method="POST" style="display: inline;">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                <button type="submit">Logout</button>
+            </form>
+        <% } else { %>
+            <a href="/login">Login</a> | 
+            <a href="/signup">Sign Up</a>
+        <% } %>
+    </nav>
+
+    <!-- Lista geral de erros -->
+    <% if (errors && errors.length > 0) { %>
+        <ul class="error-messages">
+            <% errors.forEach(error => { %>
+                <li><%= error.msg %></li>
+            <% }) %>
+        </ul>
+    <% } %>
+
+    <!-- Formulário de cadastro -->
+    <form action="/signup" method="POST" class="signup-form">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+        <!-- Campo Email -->
+        <div class="form-group">
+            <input 
+                type="email" 
+                name="email" 
+                placeholder="Seu e-mail"
+                value="<%= oldInput?.email || '' %>" 
+                required
+            >
+            <% if (errors?.some(e => e.param === 'email')) { %>
+                <small class="error">
+                    <%= errors.find(e => e.param === 'email').msg %>
+                </small>
+            <% } %>
+        </div>
+
+        <!-- Campo Senha -->
+        <div class="form-group">
+            <input 
+                type="password" 
+                name="password" 
+                placeholder="Senha" 
+                required
+            >
+            <% if (errors?.some(e => e.param === 'password')) { %>
+                <small class="error">
+                    <%= errors.find(e => e.param === 'password').msg %>
+                </small>
+            <% } %>
+        </div>
+
+        <button type="submit">Cadastrar</button>
+    </form>
+</body>
+
+</html>

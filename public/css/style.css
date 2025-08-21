@@ -1,0 +1,21 @@
+/* Formulários de login e cadastro */
+.login-form,
+.signup-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 20%;
+}
+
+/* Navegação */
+.menu-nav {
+    text-align: right;
+    padding: 10px;
+}
+
+/* Mensagens de erro */
+.error-messages {
+    color: red;
+    list-style: none;
+    padding: 0;
+}
